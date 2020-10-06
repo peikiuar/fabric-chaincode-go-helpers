@@ -24,7 +24,7 @@ func PutState(ctx contractapi.TransactionContextInterface, key string, v interfa
 	return
 }
 
-// GetState is a function to get data from the World State
+// GetState is a function to get data from the World State that will return an error if the state does not exist and that will unmarshal to a specified empty interface if found
 func GetState(ctx contractapi.TransactionContextInterface, key string, v interface{}) (err error) {
 	bytes, err := ctx.GetStub().GetState(key)
 	if err != nil {
