@@ -291,9 +291,9 @@ func (m *MockChaincodeStub) GetStringArgs() []string {
 }
 
 // GetState retrieves the value for a given key from the ledger
-func (m *MockChaincodeStub) GetState(key string) ([]byte, error) {
-	value := m.State[key]
-	return value, nil
+func (m *MockChaincodeStub) GetState(key string) (value []byte, err error) {
+	value = m.State[key]
+	return
 }
 
 // GetStateByPartialCompositeKey function can be invoked by a chaincode to query the
