@@ -18,6 +18,7 @@ var (
 	ErrEmptyTransientFieldValue = errors.New("Transient field has empty value")
 )
 
+// GetTransientDataValue is a function that obtains the value of a specific field of the private data
 func GetTransientDataValue(ctx contractapi.TransactionContextInterface, fieldName string, v interface{}) (err error) {
 	TransientMap, err := ctx.GetStub().GetTransient()
 	if err != nil {
