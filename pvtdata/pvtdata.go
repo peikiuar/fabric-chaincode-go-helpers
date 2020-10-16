@@ -7,9 +7,9 @@ import (
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 )
 
-const (
-	implicitCollectionPrefix = "_implicit_org_"
-)
+//const (
+//	implicitCollectionPrefix = "_implicit_org_"
+//)
 
 // Technical pvtdata errors
 // TODO: make errors constant
@@ -33,6 +33,7 @@ func GetTransientDataValue(ctx contractapi.TransactionContextInterface, fieldNam
 
 	if len(value) == 0 {
 		err = ErrEmptyTransientFieldValue
+		return
 	}
 
 	err = json.Unmarshal(value, v)

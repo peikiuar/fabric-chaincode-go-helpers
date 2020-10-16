@@ -200,7 +200,7 @@ func (m *MockChaincodeStub) PutPrivateData(collection string, key string, value 
 	colMap, ok := m.PvtState[collection]
 	if !ok {
 		m.PvtState[collection] = make(map[string][]byte)
-		colMap, _ = m.PvtState[collection]
+		colMap = m.PvtState[collection]
 	}
 
 	colMap[key] = value
@@ -231,7 +231,7 @@ func (m *MockChaincodeStub) SetPrivateDataValidationParameter(collection, key st
 	colEndorsementMap, ok := m.EndorsementPolicies[collection]
 	if !ok {
 		m.EndorsementPolicies[collection] = make(map[string][]byte)
-		colEndorsementMap, _ = m.EndorsementPolicies[collection]
+		colEndorsementMap = m.EndorsementPolicies[collection]
 	}
 
 	colEndorsementMap[key] = ep
@@ -481,10 +481,7 @@ func (iter *MockStateRangeQueryIterator) HasNext() bool {
 		comp1 := strings.Compare(current.Value.(string), iter.StartKey)
 		comp2 := strings.Compare(current.Value.(string), iter.EndKey)
 		if comp1 >= 0 {
-			if comp2 < 0 {
-				return true
-			}
-			return false
+			return comp2 < 0
 		}
 		current = current.Next()
 	}
@@ -493,12 +490,12 @@ func (iter *MockStateRangeQueryIterator) HasNext() bool {
 
 // Next returns the next key and value in the range query iterator.
 func (iter *MockStateRangeQueryIterator) Next() (*queryresult.KV, error) {
-	if iter.Closed == true {
+	if iter.Closed {
 		err := errors.New("MockStateRangeQueryIterator.Next() called after Close()")
 		return nil, err
 	}
 
-	if iter.HasNext() == false {
+	if !iter.HasNext() {
 		err := errors.New("MockStateRangeQueryIterator.Next() called when it does not HaveNext()")
 		return nil, err
 	}
@@ -523,7 +520,7 @@ func (iter *MockStateRangeQueryIterator) Next() (*queryresult.KV, error) {
 // Close closes the range query iterator. This should be called when done
 // reading from the iterator to free up resources.
 func (iter *MockStateRangeQueryIterator) Close() error {
-	if iter.Closed == true {
+	if iter.Closed {
 		err := errors.New("MockStateRangeQueryIterator.Close() called after Close()")
 		return err
 	}
