@@ -63,10 +63,12 @@ type MockChaincodeStub struct {
 	Creator []byte
 
 	Decorations map[string][]byte
+
+	transient map[string][]byte
 }
 
 // NewMockChaincodeStub Constructor to initialise the internal State map
-func NewMockChaincodeStub(name string, cc shim.Chaincode) *MockChaincodeStub {
+func NewMockChaincodeStub(name string, cc shim.Chaincode, transient map[string][]byte) *MockChaincodeStub {
 	m := new(MockChaincodeStub)
 	m.Name = name
 	m.cc = cc
@@ -77,6 +79,7 @@ func NewMockChaincodeStub(name string, cc shim.Chaincode) *MockChaincodeStub {
 	m.Keys = list.New()
 	m.ChaincodeEventsChannel = make(chan *pb.ChaincodeEvent, 100) //define large capacity for non-blocking setEvent calls.
 	m.Decorations = make(map[string][]byte)
+	m.transient = transient
 
 	return m
 }
@@ -439,9 +442,9 @@ func (m *MockChaincodeStub) GetStateByRangeWithPagination(startKey, endKey strin
 	return nil, nil, nil
 }
 
-// GetTransient Not implemented ...
+// GetTransient ...
 func (m *MockChaincodeStub) GetTransient() (map[string][]byte, error) {
-	return nil, nil
+	return m.transient, nil
 }
 
 /*****************************

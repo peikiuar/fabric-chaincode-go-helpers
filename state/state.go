@@ -7,7 +7,7 @@ import (
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 )
 
-// Technical shim errors
+// Technical state errors
 // TODO: make errors constant
 var (
 	ErrStateNotFound = errors.New("State was not found")

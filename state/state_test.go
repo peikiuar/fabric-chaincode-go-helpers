@@ -6,15 +6,15 @@ import (
 	"github.com/braduf/fabric-chaincode-go-helpers/mocking"
 )
 
-type oneFieldMockState struct {
+type simpleMockState struct {
 	Field string `json:"field"`
 }
 
 func TestPutState(t *testing.T) {
-	mockStub := mocking.NewMockChaincodeStub("TestPutState", nil)
+	mockStub := mocking.NewMockChaincodeStub("TestPutState", nil, nil)
 	mockTransactionContext := mocking.NewMockTransactionContext(mockStub, nil)
 	key := "key"
-	value := oneFieldMockState{"value"}
+	value := simpleMockState{"value"}
 
 	mockStub.MockTransactionStart("1")
 	err := PutState(mockTransactionContext, key, value)
@@ -25,11 +25,11 @@ func TestPutState(t *testing.T) {
 
 func TestGetState(t *testing.T) {
 	t.Run("get non-existing state", func(t *testing.T) {
-		mockStub := mocking.NewMockChaincodeStub("TestGetState", nil)
+		mockStub := mocking.NewMockChaincodeStub("TestGetState", nil, nil)
 		mockTransactionContext := mocking.NewMockTransactionContext(mockStub, nil)
 
 		mockStub.MockTransactionStart("1")
-		var got oneFieldMockState
+		var got simpleMockState
 		err := GetState(mockTransactionContext, "nonExistingKey", &got)
 		mockStub.MockTransactionEnd("1")
 
@@ -37,17 +37,17 @@ func TestGetState(t *testing.T) {
 	})
 
 	t.Run("get put state", func(t *testing.T) {
-		mockStub := mocking.NewMockChaincodeStub("TestGetState", nil)
+		mockStub := mocking.NewMockChaincodeStub("TestGetState", nil, nil)
 		mockTransactionContext := mocking.NewMockTransactionContext(mockStub, nil)
 		key := "worldStateKey"
-		value := oneFieldMockState{"value"}
+		value := simpleMockState{"value"}
 
 		mockStub.MockTransactionStart("1")
 		_ = PutState(mockTransactionContext, key, value)
 		mockStub.MockTransactionEnd("1")
 
 		mockStub.MockTransactionStart("2")
-		var got oneFieldMockState
+		var got simpleMockState
 		err := GetState(mockTransactionContext, key, &got)
 		mockStub.MockTransactionEnd("2")
 
