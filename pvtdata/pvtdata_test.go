@@ -2,7 +2,6 @@ package pvtdata
 
 import (
 	"encoding/json"
-	"fmt"
 	"testing"
 
 	"github.com/braduf/fabric-chaincode-go-helpers/mocking"
@@ -14,7 +13,6 @@ func TestGetTransientDataValue(t *testing.T) {
 		transientValue := "value"
 		transientMapValue, _ := json.Marshal(transientValue)
 		mockTransient := map[string][]byte{transientFieldName: transientMapValue}
-		fmt.Println(mockTransient)
 		mockStub := mocking.NewMockChaincodeStub("TestGetTransientDataValue", nil, mockTransient)
 		mockTransactionContext := mocking.NewMockTransactionContext(mockStub, nil)
 
@@ -27,6 +25,36 @@ func TestGetTransientDataValue(t *testing.T) {
 		if got != transientValue {
 			t.Errorf("got %q want %q", got, transientValue)
 		}
+	})
+
+	t.Run("wrong transient field name", func(t *testing.T) {
+		transientFieldName := "field"
+		transientValue := "value"
+		transientMapValue, _ := json.Marshal(transientValue)
+		mockTransient := map[string][]byte{transientFieldName: transientMapValue}
+		mockStub := mocking.NewMockChaincodeStub("TestGetTransientDataValue", nil, mockTransient)
+		mockTransactionContext := mocking.NewMockTransactionContext(mockStub, nil)
+
+		mockStub.MockTransactionStart("1")
+		var got string
+		err := GetTransientDataValue(mockTransactionContext, "otherFieldName", &got)
+		mockStub.MockTransactionEnd("1")
+
+		assertError(t, err, ErrWrongTransientFieldName)
+	})
+
+	t.Run("empty transient value", func(t *testing.T) {
+		transientFieldName := "field"
+		mockTransient := map[string][]byte{transientFieldName: []byte("")}
+		mockStub := mocking.NewMockChaincodeStub("TestGetTransientDataValue", nil, mockTransient)
+		mockTransactionContext := mocking.NewMockTransactionContext(mockStub, nil)
+
+		mockStub.MockTransactionStart("1")
+		var got string
+		err := GetTransientDataValue(mockTransactionContext, transientFieldName, &got)
+		mockStub.MockTransactionEnd("1")
+
+		assertError(t, err, ErrEmptyTransientFieldValue)
 	})
 }
 
