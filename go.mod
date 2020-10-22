@@ -1,4 +1,4 @@
-module github.com/braduf/fabric-chaincode-go-helpers
+module github.com/peikiuar/fabric-chaincode-go-helpers
 
 go 1.15
 
