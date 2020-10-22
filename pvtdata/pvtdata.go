@@ -19,7 +19,7 @@ var (
 )
 
 // GetTransientDataValue is a function that obtains the value of a specific field of the private data
-func GetTransientDataValue(ctx contractapi.TransactionContextInterface, fieldName string, v interface{}) (err error) {
+func GetTransientDataValue(ctx contractapi.TransactionContextInterface, fieldName string) (value []byte, err error) {
 	TransientMap, err := ctx.GetStub().GetTransient()
 	if err != nil {
 		return
@@ -36,10 +36,21 @@ func GetTransientDataValue(ctx contractapi.TransactionContextInterface, fieldNam
 		return
 	}
 
-	err = json.Unmarshal(value, v)
 	return
 }
 
-// func PutImplicitPrivateData(ctx contractapi.TransactionContextInterface) {}
+// GetTransientDataValueUnmarshaled is a function that obtains the value of a specific field of the private data that should be a JSON string and unmarshals it
+func GetTransientDataValueUnmarshaled(ctx contractapi.TransactionContextInterface, fieldName string, v interface{}) (err error) {
+	valueBytes, err := GetTransientDataValue(ctx, fieldName)
+	if err != nil {
+		return
+	}
+
+	err = json.Unmarshal(valueBytes, v)
+	return
+}
+
+// PutImplicitPrivateData is a function to store private data in the implicit collection of the specified organization
+//func PutImplicitPrivateData(ctx contractapi.TransactionContextInterface) {}
 
 // func GetImplicitPrivateData(ctx contractapi.TransactionContextInterface) {}
