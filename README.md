@@ -9,7 +9,7 @@ Libraries with general helper functions that are often needed and used in the de
 
 ## How to use
 
-Since this is a private repository, we need two extra steps to use these packages in other projects. 
+Since this is a private repository, we need two extra steps to use these packages in other projects.
 
 The first step is telling Go that the repo it needs to get is private:
 
