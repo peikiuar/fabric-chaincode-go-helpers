@@ -9,7 +9,15 @@ Libraries with general helper functions that are often needed and used in the de
 
 ## How to use
 
-Since this is a private repository, we need one extra step to use these packages in other projects. Luckily Go with Go modules uses git to get the imported packages in a project, so we only need to make sure that our local git configurations have our credentials to access this repository. This can be set with the following command:
+Since this is a private repository, we need two extra steps to use these packages in other projects. 
+
+The first step is telling Go that the repo it needs to get is private:
+
+```shell
+go env -w GOPRIVATE=github.com/peikiuar/fabric-chaincode-go-helpers
+```
+
+And since Go with Go modules uses git to get the imported packages in a project, the second step is to make sure that our local git configurations have our credentials to access this repository. This can be set with the following command:
 
 ```shell
 git config \
