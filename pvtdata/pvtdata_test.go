@@ -83,7 +83,59 @@ func TestGetTransientDataValueUnmarshaled(t *testing.T) {
 }
 
 func TestPutImplicitPrivateData(t *testing.T) {
+	mockStub := mocking.NewMockChaincodeStub("TestPutImplicitPrivateData", nil, nil)
+	mockTransactionContext := mocking.NewMockTransactionContext(mockStub, nil)
+	collectionMSP := "Org1"
+	type privateData struct {
+		Field1 string `json:"field1"`
+		Field2 int    `json:"field2"`
+		Field3 bool   `json:"field3"`
+	}
+	pvtData := privateData{"value1", 2, true}
+	txID := "1"
 
+	mockStub.MockTransactionStart(txID)
+	err := PutImplicitPrivateData(mockTransactionContext, collectionMSP, mockStub.TxID, pvtData)
+	mockStub.MockTransactionEnd(txID)
+
+	mockStub.MockTransactionStart("2")
+	var got privateData
+	gotBytes, _ := mockStub.GetPrivateData(implicitCollectionPrefix+collectionMSP, txID)
+	_ = json.Unmarshal(gotBytes, &got)
+	mockStub.MockTransactionEnd("2")
+
+	assertError(t, err, nil)
+	if !reflect.DeepEqual(got, pvtData) {
+		t.Errorf("got %v want %v", got, pvtData)
+	}
+}
+
+func TestGetImplicitPrivateData(t *testing.T) {
+	mockStub := mocking.NewMockChaincodeStub("TestGetImplicitPrivateData", nil, nil)
+	mockTransactionContext := mocking.NewMockTransactionContext(mockStub, nil)
+	collectionMSP := "Org1"
+	type privateData struct {
+		Field1 string `json:"field1"`
+		Field2 int    `json:"field2"`
+		Field3 bool   `json:"field3"`
+	}
+	pvtData := privateData{"value1", 2, true}
+	pvtDataBytes, _ := json.Marshal(pvtData)
+	txID := "1"
+
+	mockStub.MockTransactionStart(txID)
+	_ = mockStub.PutPrivateData(implicitCollectionPrefix+collectionMSP, mockStub.TxID, pvtDataBytes)
+	mockStub.MockTransactionEnd(txID)
+
+	mockStub.MockTransactionStart("2")
+	var got privateData
+	err := GetImplicitPrivateData(mockTransactionContext, collectionMSP, txID, &got)
+	mockStub.MockTransactionEnd("2")
+
+	assertError(t, err, nil)
+	if !reflect.DeepEqual(got, pvtData) {
+		t.Errorf("got %v want %v", got, pvtData)
+	}
 }
 
 func assertError(t *testing.T, got, want error) {
