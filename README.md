@@ -1,7 +1,7 @@
 # fabric-chaincode-go-helpers
 
-![Lint Code Base](https://github.com/braduf/fabric-chaincode-go-helpers/workflows/Lint%20Code%20Base/badge.svg)
-![Test Code Base](https://github.com/braduf/fabric-chaincode-go-helpers/workflows/Test%20Code%20Base/badge.svg)
+![Lint Code Base](https://github.com/peikiuar/fabric-chaincode-go-helpers/workflows/Lint%20Code%20Base/badge.svg)
+![Test Code Base](https://github.com/peikiuar/fabric-chaincode-go-helpers/workflows/Test%20Code%20Base/badge.svg)
 
 ## Introduction
 
