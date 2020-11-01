@@ -8,17 +8,17 @@ import (
 	"github.com/peikiuar/fabric-chaincode-go-helpers/mocking"
 )
 
-func TestGetTransientDataValue(t *testing.T) {
+func TestGetTransientDataValueBytes(t *testing.T) {
 	t.Run("get existing string field", func(t *testing.T) {
 		transientFieldName := "field"
 		transientValue := []byte("value")
 		mockTransient := make(map[string][]byte)
 		mockTransient[transientFieldName] = transientValue
-		mockStub := mocking.NewMockChaincodeStub("TestGetTransientDataValue", nil, mockTransient)
+		mockStub := mocking.NewMockChaincodeStub("TestGetTransientDataValueBytes", nil, mockTransient)
 		mockTransactionContext := mocking.NewMockTransactionContext(mockStub, nil)
 
 		mockStub.MockTransactionStart("1")
-		got, err := GetTransientDataValue(mockTransactionContext, transientFieldName)
+		got, err := GetTransientDataValueBytes(mockTransactionContext, transientFieldName)
 		mockStub.MockTransactionEnd("1")
 
 		assertError(t, err, nil)
@@ -32,11 +32,11 @@ func TestGetTransientDataValue(t *testing.T) {
 		transientValue := "value"
 		mockTransient := make(map[string][]byte)
 		mockTransient[transientFieldName] = []byte(transientValue)
-		mockStub := mocking.NewMockChaincodeStub("TestGetTransientDataValue", nil, mockTransient)
+		mockStub := mocking.NewMockChaincodeStub("TestGetTransientDataValueBytes", nil, mockTransient)
 		mockTransactionContext := mocking.NewMockTransactionContext(mockStub, nil)
 
 		mockStub.MockTransactionStart("1")
-		_, err := GetTransientDataValue(mockTransactionContext, "otherFieldName")
+		_, err := GetTransientDataValueBytes(mockTransactionContext, "otherFieldName")
 		mockStub.MockTransactionEnd("1")
 
 		assertError(t, err, ErrWrongTransientFieldName)
@@ -46,18 +46,18 @@ func TestGetTransientDataValue(t *testing.T) {
 		transientFieldName := "field"
 		mockTransient := make(map[string][]byte)
 		mockTransient[transientFieldName] = []byte("")
-		mockStub := mocking.NewMockChaincodeStub("TestGetTransientDataValue", nil, mockTransient)
+		mockStub := mocking.NewMockChaincodeStub("TestGetTransientDataValueBytes", nil, mockTransient)
 		mockTransactionContext := mocking.NewMockTransactionContext(mockStub, nil)
 
 		mockStub.MockTransactionStart("1")
-		_, err := GetTransientDataValue(mockTransactionContext, transientFieldName)
+		_, err := GetTransientDataValueBytes(mockTransactionContext, transientFieldName)
 		mockStub.MockTransactionEnd("1")
 
 		assertError(t, err, ErrEmptyTransientFieldValue)
 	})
 }
 
-func TestGetTransientDataValueUnmarshaled(t *testing.T) {
+func TestGetTransientDataValue(t *testing.T) {
 	t.Run("get existing JSON string field", func(t *testing.T) {
 		type mockDataValue struct {
 			Key string `json:"key"`
@@ -67,12 +67,12 @@ func TestGetTransientDataValueUnmarshaled(t *testing.T) {
 		transientMapValue, _ := json.Marshal(transientFieldValue)
 		mockTransient := make(map[string][]byte)
 		mockTransient[transientFieldName] = transientMapValue
-		mockStub := mocking.NewMockChaincodeStub("TestGetTransientDataValue", nil, mockTransient)
+		mockStub := mocking.NewMockChaincodeStub("TestGetTransientDataValueBytes", nil, mockTransient)
 		mockTransactionContext := mocking.NewMockTransactionContext(mockStub, nil)
 
 		mockStub.MockTransactionStart("1")
 		var got mockDataValue
-		err := GetTransientDataValueUnmarshaled(mockTransactionContext, transientFieldName, &got)
+		err := GetTransientDataValue(mockTransactionContext, transientFieldName, &got)
 		mockStub.MockTransactionEnd("1")
 
 		assertError(t, err, nil)

@@ -19,8 +19,8 @@ var (
 	ErrPrivateDataNotFound      = errors.New("Private data was not found")
 )
 
-// GetTransientDataValue is a function that obtains the value of a specific field of the transient data
-func GetTransientDataValue(ctx contractapi.TransactionContextInterface, fieldName string) (value []byte, err error) {
+// GetTransientDataValueBytes is a function that obtains the value of a specific field of the transient data
+func GetTransientDataValueBytes(ctx contractapi.TransactionContextInterface, fieldName string) (value []byte, err error) {
 	TransientMap, err := ctx.GetStub().GetTransient()
 	if err != nil {
 		return
@@ -40,9 +40,9 @@ func GetTransientDataValue(ctx contractapi.TransactionContextInterface, fieldNam
 	return
 }
 
-// GetTransientDataValueUnmarshaled is a function that obtains the value of a specific field of the transient data that should be a JSON string and unmarshals it
-func GetTransientDataValueUnmarshaled(ctx contractapi.TransactionContextInterface, fieldName string, v interface{}) (err error) {
-	valueBytes, err := GetTransientDataValue(ctx, fieldName)
+// GetTransientDataValue is a function that obtains the value of a specific field of the transient data that should be a JSON string and unmarshals it
+func GetTransientDataValue(ctx contractapi.TransactionContextInterface, fieldName string, v interface{}) (err error) {
+	valueBytes, err := GetTransientDataValueBytes(ctx, fieldName)
 	if err != nil {
 		return
 	}
@@ -69,10 +69,21 @@ func PutImplicitPrivateDataBytes(ctx contractapi.TransactionContextInterface, co
 	return
 }
 
-// GetImplicitPrivateData is a function to retrieve data stored in the implicit private data collection of the specified organization
+// GetImplicitPrivateData is a function to retrieve json data stored in the implicit private data collection of the specified organization and unmarshals it
 func GetImplicitPrivateData(ctx contractapi.TransactionContextInterface, collectionMSP string, key string, v interface{}) (err error) {
+	bytes, err := GetImplicitPrivateDataBytes(ctx, collectionMSP, key)
+	if err != nil {
+		return
+	}
+
+	err = json.Unmarshal(bytes, v)
+	return
+}
+
+// GetImplicitPrivateDataBytes is a function to retrieve data stored in the implicit private data collection of the specified organization
+func GetImplicitPrivateDataBytes(ctx contractapi.TransactionContextInterface, collectionMSP string, key string) (bytes []byte, err error) {
 	collection := implicitCollectionPrefix + collectionMSP
-	bytes, err := ctx.GetStub().GetPrivateData(collection, key)
+	bytes, err = ctx.GetStub().GetPrivateData(collection, key)
 	if err != nil {
 		return
 	}
@@ -80,7 +91,5 @@ func GetImplicitPrivateData(ctx contractapi.TransactionContextInterface, collect
 		err = ErrPrivateDataNotFound
 		return
 	}
-
-	err = json.Unmarshal(bytes, v)
 	return
 }
