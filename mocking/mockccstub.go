@@ -189,6 +189,12 @@ func (m *MockChaincodeStub) PutState(key string, value []byte) error {
 	return nil
 }
 
+// SetTransient can be used to change the transient data between transactions while maintaining the world state
+func (m *MockChaincodeStub) SetTransient(transient map[string][]byte) {
+	m.transient = transient
+	return
+}
+
 // SetEvent ...
 func (m *MockChaincodeStub) SetEvent(name string, payload []byte) error {
 	m.ChaincodeEventsChannel <- &pb.ChaincodeEvent{EventName: name, Payload: payload}
