@@ -189,6 +189,11 @@ func (m *MockChaincodeStub) PutState(key string, value []byte) error {
 	return nil
 }
 
+// SetArgs is a function to manually set the args of a function call since this is not done automatically in the MockChaincodeStub
+func (m *MockChaincodeStub) SetArgs(args [][]byte) {
+	m.args = args
+}
+
 // SetTransient can be used to change the transient data between transactions while maintaining the world state
 func (m *MockChaincodeStub) SetTransient(transient map[string][]byte) {
 	m.transient = transient
