@@ -84,11 +84,17 @@ func GetImplicitPrivateData(ctx contractapi.TransactionContextInterface, collect
 // GetImplicitPrivateDataBytes is a function to retrieve data stored in the implicit private data collection of the specified organization
 func GetImplicitPrivateDataBytes(ctx contractapi.TransactionContextInterface, collectionMSP string, key string) (bytes []byte, err error) {
 	collection := ImplicitCollectionPrefix + collectionMSP
-	bytes, err = ctx.GetStub().GetPrivateData(collection, key)
+	bytes, err = GetPrivateData(ctx, collection, key)
+	return
+}
+
+// GetPrivateData returns the data that is stored at the specified key in the private data collection
+func GetPrivateData(ctx contractapi.TransactionContextInterface, collection string, key string) (privDataBytes []byte, err error) {
+	privDataBytes, err = ctx.GetStub().GetPrivateData(collection, key)
 	if err != nil {
 		return
 	}
-	if bytes == nil {
+	if privDataBytes == nil {
 		err = ErrPrivateDataNotFound
 		return
 	}
