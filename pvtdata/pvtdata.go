@@ -8,7 +8,8 @@ import (
 )
 
 const (
-	implicitCollectionPrefix = "_implicit_org_"
+	// ImplicitCollectionPrefix is the prefix to put in front of the organisation's MSP ID to interact with its implicit private data collection
+	ImplicitCollectionPrefix = "_implicit_org_"
 )
 
 // Technical pvtdata errors
@@ -64,7 +65,7 @@ func PutImplicitPrivateData(ctx contractapi.TransactionContextInterface, collect
 
 // PutImplicitPrivateDataBytes is a function to store private data in the implicit collection of the specified organization
 func PutImplicitPrivateDataBytes(ctx contractapi.TransactionContextInterface, collectionMSP string, key string, value []byte) (err error) {
-	collection := implicitCollectionPrefix + collectionMSP
+	collection := ImplicitCollectionPrefix + collectionMSP
 	err = ctx.GetStub().PutPrivateData(collection, key, value)
 	return
 }
@@ -82,7 +83,7 @@ func GetImplicitPrivateData(ctx contractapi.TransactionContextInterface, collect
 
 // GetImplicitPrivateDataBytes is a function to retrieve data stored in the implicit private data collection of the specified organization
 func GetImplicitPrivateDataBytes(ctx contractapi.TransactionContextInterface, collectionMSP string, key string) (bytes []byte, err error) {
-	collection := implicitCollectionPrefix + collectionMSP
+	collection := ImplicitCollectionPrefix + collectionMSP
 	bytes, err = ctx.GetStub().GetPrivateData(collection, key)
 	if err != nil {
 		return

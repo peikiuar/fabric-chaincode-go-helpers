@@ -100,7 +100,7 @@ func TestPutImplicitPrivateData(t *testing.T) {
 
 	mockStub.MockTransactionStart("2")
 	var got privateData
-	gotBytes, _ := mockStub.GetPrivateData(implicitCollectionPrefix+collectionMSP, txID)
+	gotBytes, _ := mockStub.GetPrivateData(ImplicitCollectionPrefix+collectionMSP, txID)
 	_ = json.Unmarshal(gotBytes, &got)
 	mockStub.MockTransactionEnd("2")
 
@@ -124,7 +124,7 @@ func TestGetImplicitPrivateData(t *testing.T) {
 	txID := "1"
 
 	mockStub.MockTransactionStart(txID)
-	_ = mockStub.PutPrivateData(implicitCollectionPrefix+collectionMSP, mockStub.TxID, pvtDataBytes)
+	_ = mockStub.PutPrivateData(ImplicitCollectionPrefix+collectionMSP, mockStub.TxID, pvtDataBytes)
 	mockStub.MockTransactionEnd(txID)
 
 	mockStub.MockTransactionStart("2")
