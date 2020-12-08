@@ -63,7 +63,7 @@ func GetStateHistory(ctx contractapi.TransactionContextInterface, key string) (*
 			return nil, err
 		}
 		// Add a comma before array members, suppress it for the first array member
-		if bArrayMemberAlreadyWritten == true {
+		if bArrayMemberAlreadyWritten {
 			buffer.WriteString(",")
 		}
 		buffer.WriteString("{\"TxId\":")
