@@ -19,6 +19,18 @@ func QueryCouchDB(ctx contractapi.TransactionContextInterface, query string) (qu
 	return
 }
 
+// QueryPrivatedata lets you execute rich private data queries
+func QueryPrivatedata(ctx contractapi.TransactionContextInterface, collection string, query string) (queryResult *bytes.Buffer, err error) {
+	resultsIterator, err := ctx.GetStub().GetPrivateDataQueryResult(collection, query)
+	if err != nil {
+		return
+	}
+	defer resultsIterator.Close()
+
+	queryResult, err = constructQueryResponseFromIterator(resultsIterator)
+	return
+}
+
 func constructQueryResponseFromIterator(it shim.StateQueryIteratorInterface) (*bytes.Buffer, error) {
 	// buffer is a JSON array containing QueryResults
 	var buffer bytes.Buffer
