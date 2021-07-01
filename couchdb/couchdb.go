@@ -2,6 +2,7 @@ package couchdb
 
 import (
 	"bytes"
+	"strconv"
 
 	"github.com/hyperledger/fabric-chaincode-go/shim"
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
@@ -41,7 +42,7 @@ func QueryCouchDBWithPagination(ctx contractapi.TransactionContextInterface, que
 	queryResult.WriteString(queryResponseMetadata.GetBookmark())
 	queryResult.WriteString(`",`)
 	queryResult.WriteString(`"fetchedRecordsCount" : `)
-	queryResult.WriteString(string(queryResponseMetadata.GetFetchedRecordsCount()))
+	queryResult.WriteString(strconv.Itoa(int(queryResponseMetadata.GetFetchedRecordsCount())))
 	queryResult.WriteString(`}`)
 
 	return &queryResult, nil
