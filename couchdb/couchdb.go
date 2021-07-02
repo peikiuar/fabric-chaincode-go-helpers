@@ -2,6 +2,7 @@ package couchdb
 
 import (
 	"bytes"
+	"strconv"
 
 	"github.com/hyperledger/fabric-chaincode-go/shim"
 	"github.com/hyperledger/fabric-contract-api-go/contractapi"
@@ -20,18 +21,19 @@ func QueryCouchDB(ctx contractapi.TransactionContextInterface, query string) (qu
 }
 
 // QueryCouchDB lets you execute rich CouchDB queries with pagination
-func QueryCouchDBWithPagination(ctx contractapi.TransactionContextInterface, query string, pageSize int32, bookmark string) (queryResult *bytes.Buffer, err error) {
+func QueryCouchDBWithPagination(ctx contractapi.TransactionContextInterface, query string, pageSize int32, bookmark string) (*bytes.Buffer, error) {
 	resultsIterator, queryResponseMetadata ,err := ctx.GetStub().GetQueryResultWithPagination(query, pageSize, bookmark)
 	if err != nil {
-		return
+		return nil, err
 	}
 	defer resultsIterator.Close()
 
 	records, err := constructQueryResponseFromIterator(resultsIterator)
 	if err != nil {
-		return
+		return nil, err
 	}
 
+	var queryResult bytes.Buffer
 	queryResult.WriteString(`{`)
 	queryResult.WriteString(`"records" :`)
 	queryResult.WriteString(records.String())
@@ -40,10 +42,10 @@ func QueryCouchDBWithPagination(ctx contractapi.TransactionContextInterface, que
 	queryResult.WriteString(queryResponseMetadata.GetBookmark())
 	queryResult.WriteString(`",`)
 	queryResult.WriteString(`"fetchedRecordsCount" : `)
-	queryResult.WriteString(string(queryResponseMetadata.GetFetchedRecordsCount()))
+	queryResult.WriteString(strconv.Itoa(int(queryResponseMetadata.GetFetchedRecordsCount())))
 	queryResult.WriteString(`}`)
 
-	return
+	return &queryResult, nil
 }
 
 // QueryPrivateData lets you execute rich private data queries
