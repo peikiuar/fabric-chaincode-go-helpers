@@ -549,3 +549,12 @@ func NewMockStateRangeQueryIterator(m *MockChaincodeStub, startKey string, endKe
 	iter.Current = m.Keys.Front()
 	return iter
 }
+
+// SetTxTimestamp ...
+func (m *MockChaincodeStub) SetTxTimestamp(t time.Time) {
+	ts := &timestamp.Timestamp{
+		Seconds: t.Unix(),
+		Nanos: int32(t.Nanosecond()),
+	}
+	m.TxTimestamp = ts
+}
