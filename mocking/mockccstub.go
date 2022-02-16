@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"strings"
 	"unicode/utf8"
+	"time"
 
 	"github.com/golang/protobuf/ptypes"
 	"github.com/golang/protobuf/ptypes/timestamp"
@@ -548,4 +549,13 @@ func NewMockStateRangeQueryIterator(m *MockChaincodeStub, startKey string, endKe
 	iter.EndKey = endKey
 	iter.Current = m.Keys.Front()
 	return iter
+}
+
+// SetTxTimestamp ...
+func (m *MockChaincodeStub) SetTxTimestamp(t time.Time) {
+	ts := &timestamp.Timestamp{
+		Seconds: t.Unix(),
+		Nanos: int32(t.Nanosecond()),
+	}
+	m.TxTimestamp = ts
 }
